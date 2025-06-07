@@ -11,6 +11,7 @@ The scripts as well as the REST API are written in Python. Amazon Redshift was c
 
 ## Project structure
 
+```
 ├── analysis/
 │   ├── analyze_json_files.ipynb   # Jupyter Notebook for EDA
 ├── python-rest-api/
@@ -23,6 +24,7 @@ The scripts as well as the REST API are written in Python. Amazon Redshift was c
 │   ├── load_to_redshift_script/
 │   │   ├── load_json_to_redshift.py # Script for data transformation and loading
 ├── README.md                      # Project documentation
+```
 
 ## Setup Instructions
 
@@ -74,3 +76,5 @@ Sensitive information, such as database credentials and AWS keys, is stored in e
 - Documentation: The documentation provides an overview of the project and setup instructions but lacks detailed explanations of the codebase and design decisions.
 
 - Deployment: The REST API is designed to run locally and does not include deployment configurations for production environments (e.g., Docker, Kubernetes, or cloud deployment).
+
+- Clean Code: While the code is functional, it does not fully adhere to clean code principles such as consistent naming conventions, modularity, and comprehensive inline documentation, which could improve readability, maintainability, and scalability.
