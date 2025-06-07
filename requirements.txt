@@ -1,0 +1,15 @@
+# Required libraries
+notebook
+ipykernel
+pandas>=1.5.3
+Flask==2.2.2
+Flask-RESTful==0.3.9
+SQLAlchemy==1.4.36
+marshmallow==3.14.1
+pytest==7.1.2
+redshift_connector==2.1.7
+python-dotenv==1.1.0
+matplotlib>=3.7.1
+folium>=0.14.0
+numpy>=1.21.0
+scipy>=1.7.0

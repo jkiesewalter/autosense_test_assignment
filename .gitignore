@@ -1,0 +1,24 @@
+# Exclude the .env file
+.env
+
+# Exclude the virtual environment directory
+.venv/
+
+# Exclude the resources folder
+resources/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# System files
+.DS_Store
+Thumbs.db
