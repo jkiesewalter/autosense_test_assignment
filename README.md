@@ -29,32 +29,51 @@ The scripts as well as the REST API are written in Python. Amazon Redshift was c
 ## Setup Instructions
 
 1. Prerequisites
-- Amazon Redshift (or any columnar database)
-- AWS S3 Bucket
-- AWS credentials for S3 and Redshift access
+
+- Amazon Redshift database
+- AWS S3 bucket
 
 2. Install Dependencies
+
 Install the required Python packages with the requirements.txt
+`pip install -r requirements.txt`
 
 3. Run Exploratory Data Analysis
+
 Open the Jupyter Notebook and run the cells.
+`jupyter notebook analysis/analyze_json_files.ipynb`
 
 4. Load Data into Redshift
+
 Run the data transformation and loading script.
+`python python-rest-api/write_to_db/load_json_to_redshift.py`
 
 5. Start the REST API
+
 Run the Flask application. The API will be available at http://127.0.0.1:5000.
+`python python-rest-api/src/app.py`
 
 ## API Endpoints
 
-1. GET /users
-Description: Returns all users or filters by user_id, first_name, last_name, and email.
-2. GET /chargers
-Description: Returns all chargers or filters by charger_id and city.
-3. GET /chargers/{charger_id}/usage-analytics
-Description: Returns usage analytics for a specific charger.
-4. GET /transactions-extended
-Description: Returns all transactions in extended format with optional filters.
+1. `GET /users`
+
+Returns all users or filters by user_id, first_name, last_name, and email.
+Example: `curl -X GET "http://127.0.0.1:5000/users?first_name=Mathew"`
+
+2. `GET /chargers`
+
+Returns all chargers or filters by charger_id and city.
+Example: `curl -X GET "http://127.0.0.1:5000/chargers?city=Zurich"`
+
+3. `GET /chargers/{charger_id}/usage-analytics`
+
+Returns usage analytics for a specific charger.
+Example: `curl -X GET "http://127.0.0.1:5000/chargers/charger_123/usage-analytics?start_datetime=2025-01-01&end_datetime=2025-05-31"`
+
+4. `GET /transactions-extended`
+
+Returns all transactions in extended format with optional filters.
+Example: `curl -X GET "http://127.0.0.1:5000/transactions-extended?min_kwh=10&max_amount_charged=50"`
 
 ## Limitations:
 
