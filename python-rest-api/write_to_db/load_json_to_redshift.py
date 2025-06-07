@@ -160,25 +160,42 @@ def transform_json_to_csv(json_folder, csv_output_path, table_name):
             filtered_record = {field: user.get(field, None) for field in required_fields}
             data.append(filtered_record)
 
-    elif table_name == "chargers":
-        chargers_file = os.path.join(json_folder, "chargers.json")
-        with open(chargers_file, "r") as file:
-            chargers = json.load(file)
-        for charger in chargers:
-            filtered_record = {}
-            for field in required_fields:
-                if "." in field:  # Handle nested fields like "location.lat"
-                    keys = field.split(".")
-                    value = charger
-                    for key in keys:
-                        value = value.get(key, None) if isinstance(value, dict) else None
-                    filtered_record[field.replace(".", "_")] = value
-                else:
-                    filtered_record[field] = charger.get(field, None)
-            data.append(filtered_record)
-
     # Convert the data to a DataFrame
     df = pd.DataFrame(data)
+
+    # Process the name column to extract first_name and last_name
+    if table_name == "users" and "name" in df.columns:
+        # Define prefixes and suffixes
+        prefixes = ["Mr.", "Mrs.", "Ms.", "Miss", "Mx", "Prof.", "Dr.", "Rev.", "Fr", "Lord", "Lady", "Sir", "Dame", "Capt.", "Col.", "Gen.", "Lt.", "Maj.", "Sgt.", "Cpl.", "Pvt.", "Adm."]
+        suffixes = ["Jr.", "Sr.", "MD", "PhD", "DDS", "DVM", "DSc", "DPhil", "JD", "Esq.", "CPA", "CFA", "MBA", "LLB", "LLM", "BSc", "BA", "MA", "MSc", "PharmD", "EdD", "RN", "PE", "II", "III", "IV", "V"]
+
+        def clean_name(name):
+            # Remove prefixes
+            for prefix in prefixes:
+                if name.startswith(prefix + " "):
+                    name = name[len(prefix) + 1:]
+                    break
+            # Remove suffixes
+            for suffix in suffixes:
+                if name.endswith(" " + suffix):
+                    name = name[:-(len(suffix) + 1)]
+                    break
+            return name
+
+        def split_name(name):
+            parts = name.split()
+            first_name = parts[0] if len(parts) > 0 else None
+            last_name = " ".join(parts[1:]) if len(parts) > 1 else None
+            return first_name, last_name
+
+        # Clean and split the name column
+        df["cleaned_name"] = df["name"].apply(clean_name)
+        df["first_name"], df["last_name"] = zip(*df["cleaned_name"].apply(split_name))
+        df.rename(columns={"name": "full_name"}, inplace=True)  # Rename 'name' to 'full_name'
+        df.drop(columns=["cleaned_name"], inplace=True)
+
+        # Ensure the DataFrame includes all required columns
+        df = df[["user_id", "full_name", "first_name", "last_name", "email", "tier", "created_at"]]
 
     # Transform timestamps to the required format and ensure they are in the same timezone
     timestamp_fields = ["start_time", "end_time", "created_at", "installed_at"]
@@ -201,7 +218,7 @@ def transform_json_to_csv(json_folder, csv_output_path, table_name):
             raise ValueError(f"Duplicate primary IDs found in {table_name} table: {duplicate_count} duplicates.")
         print(f"All primary IDs in the {table_name} table are unique.")
 
-    # Clean city names for chargers
+# Clean city names for chargers
     if table_name == "chargers":
         city_corrections = {
             "Zurich": "Zurich",
@@ -255,6 +272,6 @@ if __name__ == "__main__":
     TABLE_NAME = "users"  # Change to "users" or "chargers" as needed
 
     # Load JSON files into S3 and trigger the Redshift COPY command
-    #load_json_files_to_s3_and_redshift(JSON_FOLDER, "users")
+    load_json_files_to_s3_and_redshift(JSON_FOLDER, "users")
     #load_json_files_to_s3_and_redshift(JSON_FOLDER, "chargers")
     #load_json_files_to_s3_and_redshift(JSON_FOLDER, "transactions")
