@@ -96,4 +96,4 @@ Sensitive information, such as database credentials and AWS keys, is stored in e
 
 - Deployment: The REST API is designed to run locally and does not include deployment configurations for production environments (e.g., Docker, Kubernetes, or cloud deployment).
 
-- Clean Code: While the code is functional, it does not fully adhere to clean code principles such as consistent naming conventions, modularity, and comprehensive inline documentation, which could improve readability, maintainability, and scalability.
+- Clean Code: While the code is functional, it does not fully adhere to clean code principles such as using consistent naming conventions and modularity, which could improve readability, maintainability, and scalability.
